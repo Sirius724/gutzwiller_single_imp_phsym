@@ -1,0 +1,10 @@
+Make.sys
+Makefile
+mkl_dft_type.mod
+mkl_dfti.f90
+mkl_dfti.mod
+mkl_dfti.o
+power
+*~
+test/*
+
