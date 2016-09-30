@@ -1,6 +1,7 @@
 import numpy as np
 import scipy as sp
 import scipy.integrate as spi
+import scipy.optimize as spo
 import matplotlib.pyplot as plt
 import functions as fct
 import cmath
@@ -14,8 +15,12 @@ def f(x,e):
 	for _,en in enumerate(e):
 		g+=1/(x-en)	
 	return g
-#f_v= np.vectorize(f)
 
+def f2(x,e,pend):
+	g=0
+	for _,en in enumerate(e):
+		g+=f(x,e)-pend*x
+	return g
 
 
 def epsilon_n(n,d,delta):return delta*(n+d)
@@ -36,7 +41,7 @@ def lambda_mn(m,n,d,delta,A,N,V): return g_m(m,d,delta,A,N,V)*V/(E_m(m,d,delta,A
 
 def main():
 	Delta=1.
-	N=5
+	N=10
 	delta=Delta/N
 	d=0.5
 	V=1
@@ -127,18 +132,22 @@ def main():
 	print(E_old1,E_new1)
 
 
-
-	x=np.linspace(-1.1,1.1,1000)
+	x=np.linspace(-1.4,1.4,1000)
 	y=V**2/(2*N*Delta)*f(x,epsilon_v)
+
+	E_true=np.zeros(2*N)
+	for i,ei in enumerate(E_v):
+		E_true[i]=spo.fsolve(f2,E_v[i],args=(epsilon_v,2*N*Delta/V**2))
 
 
 	plt.plot(x,y,'b',label='g')
 	plt.plot(x,x,'r',label='g')
 	plt.vlines(epsilon_v,-1000,1000,linewidth=4)
 	plt.vlines(E_v,-1000,1000,linewidth=3,linestyles='dashed',colors='g')
-	plt.ylim(-1.2,1.2)
-	plt.xlim(-1.1,1.1)
-	plt.legend()
+	plt.vlines(E_true,-1000,1000,linewidth=2,colors='y')
+	plt.ylim(-1.4,1.4)
+	plt.xlim(-1.4,1.4)
+#	plt.legend()
 	plt.show()
 
 
